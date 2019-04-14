@@ -2,3 +2,5 @@ name: Hydrangea
 version: @version@
 main: life.grass.hydrangea.Hydrangea
 api-version: 1.13
+
+depend: [ProtocolLib]
