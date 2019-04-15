@@ -1,6 +1,10 @@
 package life.grass.hydrangea.listener
 
 import life.grass.hydrangea.*
+import life.grass.hydrangea.hotbar.choosePhantomHotbarSlot
+import life.grass.hydrangea.hotbar.closePhantomHotbar
+import life.grass.hydrangea.hotbar.isOpeningHotbarSlot
+import life.grass.hydrangea.hotbar.openPhantomHotbar
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener

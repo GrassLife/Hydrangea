@@ -1,12 +1,11 @@
-package life.grass.hydrangea
+package life.grass.hydrangea.hotbar
 
-import life.grass.hydrangea.hotbar.PhantomHotbar
 import org.bukkit.entity.Player
 
 /**
  * @author BlackBracken
  */
-object PhantomHotbarOpeningStateHolder {
+private object OpeningStateHolder {
 
     internal val openingPhantomHotbarMap = mutableMapOf<Player, PhantomHotbar>()
 
@@ -17,7 +16,7 @@ fun Player.openPhantomHotbar(phantomHotbar: PhantomHotbar) {
         return
     }
 
-    PhantomHotbarOpeningStateHolder.openingPhantomHotbarMap[this] = phantomHotbar
+    OpeningStateHolder.openingPhantomHotbarMap[this] = phantomHotbar
     phantomHotbar.openBy(this)
 }
 
@@ -29,10 +28,10 @@ fun Player.choosePhantomHotbarSlot(slot: Int) {
 }
 
 fun Player.closePhantomHotbar() {
-    PhantomHotbarOpeningStateHolder.openingPhantomHotbarMap[this]?.closeBy(this) ?: return
-    PhantomHotbarOpeningStateHolder.openingPhantomHotbarMap.remove(this)
+    OpeningStateHolder.openingPhantomHotbarMap[this]?.closeBy(this) ?: return
+    OpeningStateHolder.openingPhantomHotbarMap.remove(this)
 }
 
-fun Player.getOpeningPhantomHotbar(): PhantomHotbar? = PhantomHotbarOpeningStateHolder.openingPhantomHotbarMap[this]
+fun Player.getOpeningPhantomHotbar(): PhantomHotbar? = OpeningStateHolder.openingPhantomHotbarMap[this]
 
 fun Player.isOpeningHotbarSlot(): Boolean = this.getOpeningPhantomHotbar() != null
