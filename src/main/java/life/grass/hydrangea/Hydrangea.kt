@@ -1,6 +1,6 @@
 package life.grass.hydrangea
 
-import life.grass.hydrangea.hotbar.PhantomHotbar
+import life.grass.hydrangea.hotbar.HotbarRegisterer
 import life.grass.hydrangea.listener.PhantomHotbarListener
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -13,7 +13,7 @@ class Hydrangea : JavaPlugin() {
         lateinit var instance: Hydrangea
     }
 
-    internal val hotbarSet: MutableSet<PhantomHotbar> = mutableSetOf()
+    internal val hotbarRegistererSet: MutableSet<HotbarRegisterer> = mutableSetOf()
 
     override fun onEnable() {
         super.onEnable()
@@ -22,12 +22,12 @@ class Hydrangea : JavaPlugin() {
         server.pluginManager.registerEvents(PhantomHotbarListener(), this)
     }
 
-    fun registerHotbar(hotbar: PhantomHotbar) {
-        hotbarSet.add(hotbar)
+    fun registerHotbar(hotbarRegisterer: HotbarRegisterer) {
+        hotbarRegistererSet.add(hotbarRegisterer)
     }
 
-    fun unregisterHotbar(hotbar: PhantomHotbar) {
-        hotbarSet.remove(hotbar)
+    fun unregisterHotbar(hotbarRegisterer: HotbarRegisterer) {
+        hotbarRegistererSet.remove(hotbarRegisterer)
     }
 
 }

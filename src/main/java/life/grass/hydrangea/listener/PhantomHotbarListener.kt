@@ -1,6 +1,6 @@
 package life.grass.hydrangea.listener
 
-import life.grass.hydrangea.*
+import life.grass.hydrangea.Hydrangea
 import life.grass.hydrangea.hotbar.choosePhantomHotbarSlot
 import life.grass.hydrangea.hotbar.closePhantomHotbar
 import life.grass.hydrangea.hotbar.isOpeningHotbarSlot
@@ -32,13 +32,12 @@ class PhantomHotbarListener : Listener {
             return
         }
 
-        val mainHandMaterial = event.offHandItem ?: return
-        val openedPhantomHotbar = Hydrangea.instance.hotbarSet
-                .find { hotbar -> hotbar.filter(mainHandMaterial) }
+        val openedPhantomHotbar = Hydrangea.instance.hotbarRegistererSet
+                .find { registerer -> registerer.filter(event) }
                 ?: return
 
         event.isCancelled = true
-        player.openPhantomHotbar(openedPhantomHotbar)
+        player.openPhantomHotbar(openedPhantomHotbar.instantiate(event))
     }
 
     @EventHandler

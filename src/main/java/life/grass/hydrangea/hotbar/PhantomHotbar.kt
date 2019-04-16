@@ -10,38 +10,51 @@ import org.bukkit.inventory.ItemStack
 /**
  * @author BlackBracken
  */
-class PhantomHotbar(private val slotMap: Map<Int, PhantomHotbarSlot>,
-                    private val unregisteredSlot: PhantomHotbarSlot = defaultUnregisteredSlot,
-                    val filter: (ItemStack) -> Boolean) {
+abstract class PhantomHotbar {
 
     companion object {
-        private val defaultUnregisteredSlot = PhantomHotbarSlot(ItemStack(Material.BLACK_STAINED_GLASS_PANE)) { }
+        private const val RIGHT_EDGE = 8
 
         private val protocolManager: ProtocolManager = ProtocolLibrary.getProtocolManager()
     }
 
-    fun openBy(player: Player) {
+    open val defaultSlot = PhantomHotbarSlot(ItemStack(Material.BLACK_STAINED_GLASS_PANE)) { }
+
+    open val cancelSlot: PhantomHotbarSlot? = PhantomHotbarSlot(ItemStack(Material.BARRIER)) { }
+
+    abstract fun getSlotAt(slotPosition: Int): PhantomHotbarSlot?
+
+    internal fun openBy(player: Player) {
         val packet = protocolManager.createPacket(PacketType.Play.Server.WINDOW_ITEMS)
 
         packet.itemListModifier.writeDefaults()
 
         val hotbarItemList = mutableListOf<ItemStack>()
         repeat(36) { hotbarItemList += ItemStack(Material.AIR) }
-        repeat(9) { index -> hotbarItemList += slotMap[index]?.icon ?: unregisteredSlot.icon }
+        repeat(9) { hotbarItemList += getOverwrittenSlotAt(it).icon }
 
         packet.itemListModifier.write(0, hotbarItemList)
 
         protocolManager.sendServerPacket(player, packet)
     }
 
-    fun chooseBy(player: Player, slot: Int) {
-        val hotbarSlot = slotMap[slot] ?: unregisteredSlot
+    internal fun chooseBy(player: Player, slotPosition: Int) {
+        val hotbarSlot = getOverwrittenSlotAt(slotPosition)
 
         hotbarSlot.action(player)
     }
 
-    fun closeBy(player: Player) {
+    internal fun closeBy(player: Player) {
         player.updateInventory()
+    }
+
+    // TODO: name better
+    private fun getOverwrittenSlotAt(slotPosition: Int): PhantomHotbarSlot {
+        if (slotPosition == RIGHT_EDGE) {
+            cancelSlot?.run { return@getOverwrittenSlotAt this }
+        }
+
+        return getSlotAt(slotPosition) ?: defaultSlot
     }
 
 }
